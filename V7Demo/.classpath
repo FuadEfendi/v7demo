@@ -20,6 +20,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=V7Demo&amp;ivyXmlPath=ivy.xml&amp;confs=widgetset-compile&amp;ivySettingsPath=%24%7Bworkspace_loc%3AV7Demo%2Fivysettings.xml%7D&amp;loadSettingsOnDemand=false&amp;propertyFiles="/>
-	<classpathentry kind="lib" path="/home/david/temp/v7-core-0.2-vaadin-7.0.5.jar"/>
+	<classpathentry kind="lib" path="/home/david/temp/v7-core-0.3-vaadin-7.1.0.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
