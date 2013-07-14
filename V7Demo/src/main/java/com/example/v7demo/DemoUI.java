@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import uk.co.q3c.v7.base.navigate.V7Navigator;
 import uk.co.q3c.v7.base.ui.ScopedUI;
 
+import com.vaadin.annotations.Theme;
 import com.vaadin.data.util.converter.ConverterFactory;
 import com.vaadin.server.ErrorHandler;
 import com.vaadin.ui.AbstractOrderedLayout;
@@ -16,13 +17,13 @@ import com.vaadin.ui.VerticalLayout;
  * @author David Sowerby
  * 
  */
+@Theme("chameleon")
 public class DemoUI extends ScopedUI {
 
 	private VerticalLayout layout;
 
 	@Inject
-	protected DemoUI(V7Navigator navigator, ErrorHandler errorHandler,
-			ConverterFactory converterFactory) {
+	protected DemoUI(V7Navigator navigator, ErrorHandler errorHandler, ConverterFactory converterFactory) {
 		super(navigator, errorHandler, converterFactory);
 	}
 
