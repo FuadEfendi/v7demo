@@ -1,0 +1,199 @@
+apply plugin: 'war'
+apply plugin: 'eclipse'
+
+defaultTasks  'clean',  'build', 'eclipse'
+
+sourceCompatibility = 1.7
+
+eclipseClasspath.variables = [USER_HOME:file(System.properties.'user.home')]
+eclipseWtpComponent.variables = [USER_HOME:file(System.properties.'user.home')]
+System.properties.'line.separator' = "\n";
+
+
+shiroVersion = '1.2.0'
+
+tomcatHome = '/home/david/tomcat'
+
+println 'Campus repository is at: ' + campusRepo
+println 'Building version: '+ version
+
+jar {
+	manifest {
+		attributes 'Implementation-Title': 'Example - Address Book', 'Implementation-Version': version
+	}
+}
+
+
+war {
+	version= ''
+	extension = 'war'
+	baseName='campus'
+}
+
+task setVersion << {
+	File  versionFile  =  file('src/main/java/com/solstoneplus/campus/base/app/AppVersion.java' )
+	versionFile.write(  versionFile.text.replaceAll(  '".*"',  '"' + version + '"'  ))
+}
+task deployToTomcat(dependsOn: 'war') << {
+	copy {
+		from war.archivePath
+		into "${tomcatHome}/webapps"
+	}
+}
+
+repositories {
+
+
+	//for our own gnerated jars
+	flatDir(dirs: file(campusRepo)) //this is where the campus jars are stored
+
+	//central repo for most open source
+	mavenCentral()
+
+	//for eclipselink
+	mavenRepo urls: "http://www.eclipse.org/downloads/download.php?r=1&nf=1&file=/rt/eclipselink/maven.repo"
+	mavenRepo urls: "http://maven.vaadin.com/vaadin-addons"
+	mavenRepo urls: "http://download.java.net/maven/2/"
+	mavenRepo urls: "http://download.java.net/maven/glassfish/"
+	mavenRepo urls: "https://repository.apache.org/content/groups/snapshots/"
+	mavenRepo urls: "http://maven.alfresco.com/nexus/content/repositories/activiti/"
+	mavenRepo urls: "https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/"
+	
+}
+
+
+dependencies {
+
+
+
+	//database
+
+	//persistence provider
+	//	compile group: 'org.hibernate', name: 'hibernate-core', version: '3.6.4.Final'
+	//	runtime group:'org.hibernate', name:'hibernate-entitymanager', version:'3.4.0.GA'
+	compile group: 'org.eclipse.persistence', name: 'javax.persistence', version: '2.0.0'
+	compile group: 'org.eclipse.persistence', name: 'eclipselink', version: '2.2.0'
+	
+
+	//util
+	//the easiest way to get all the jung modules
+	compile group: 'net.sf.jung', name: 'jung-samples', version: '2.0.1'
+	compile 'org.codehaus.jackson:jackson-core-asl:1.9.2'
+	compile 'org.codehaus.jackson:jackson-mapper-asl:1.9.2'
+	compile 'org.apache.poi:poi-ooxml:3.7'
+	compile 'org.jsefa:jsefa:0.9.3.RELEASE'
+	
+		
+	//commons
+	compile group: 'commons-lang', name: 'commons-lang', version: '2.6'
+	compile 'org.apache.commons:commons-math3:3.0'
+	
+	//logging
+	compile group: 'org.slf4j', name: 'slf4j-api', version:'1.6.1'
+	compile group: 'org.slf4j', name: 'slf4j-log4j12', version:'1.6.1'
+	compile group: 'commons-logging', name: 'commons-logging', version:'1.1.1'
+
+	//GWT
+	compile group: 'com.google.gwt', name: 'gwt-dev', version: '2.3.0'
+	compile group: 'com.google.gwt', name: 'gwt-user', version: '2.3.0'
+	
+	//vaadin
+	compile (group: 'com.vaadin.addon', name: 'jpacontainer-addon-cval-2.0', version: '2.1.0') { exclude group: 'javax.persistence' }
+	compile group: 'org.vaadin.addons', name: 'vaadin-timeline-cval-2.0', version: '1.2.1'
+	compile group: 'org.vaadin.addons', name: 'gwt-graphics', version: '1.0.0'
+	compile group: 'com.vaadin', name:'vaadin', version:'6.7.6'
+//	compile group: 'org.vaadin.addons', name:'navigator7', version: '7.49'  now in source, and heavily modified
+	compile group: 'org.vaadin.addon', name: 'jfreechartwrapper', version: '2.5.0'
+	compile group: 'org.vaadin.addons', name: 'vaadin-colorpicker', version: '1.1.0'
+	compile group: 'org.vaadin.addons', name: 'stepper', version: '1.1.0'
+	compile group: 'org.vaadin.hene.splitbutton', name: 'splitbutton', version: '0.9.7'
+	compile group: 'org.vaadin.addons', name: 'contextmenu', version: '3.1.0'
+
+//	loaded as source, but cannot recall why
+//	compile group: 'org.vaadin.addons', name: 'imagescaler', version: '1.0'
+	
+
+
+
+	
+	//guice
+	compile group: 'com.google.inject', name: 'guice', version: '3.0'
+	compile group: 'com.google.inject.extensions', name: 'guice-servlet', version: '3.0'
+	compile group: 'com.google.inject.extensions', name: 'guice-persist', version: '3.0'
+	compile group: 'com.google.inject.extensions', name: 'guice-assistedinject', version: '3.0'
+	
+	
+//	compile group: 'aopalliance', name: 'aopalliance', version: '1.0'
+
+//	compile group: 'org.apache.cxf', name: 'cxf-bundle', version: '2.4.1'
+//	compile group: 'org.apache.cxf', name: 'cxf-bundle-jaxrs', version: '2.4.1'
+
+	compile group: 'com.sun.jersey', name: 'jersey-core', version: '1.8'
+	compile group: 'com.sun.jersey', name: 'jersey-server', version: '1.8'
+	compile group: 'com.sun.jersey.contribs', name: 'jersey-guice', version: '1.8'
+	compile group: 'com.sun.jersey', name: 'jersey-client', version: '1.8'
+	
+	compile group: 'org.apache.shiro', name: 'shiro-core', version: shiroVersion
+	compile group: 'org.apache.shiro', name: 'shiro-web', version: shiroVersion
+	compile group: 'org.apache.shiro', name: 'shiro-guice', version: shiroVersion
+	
+	compile group: 'com.mycila', name: 'mycila-guice', version: '2.0.ga'
+	
+	compile group: 'org.quartz-scheduler', name: 'quartz', version: '2.0.+'
+	compile group: 'org.99soft.guice', name: 'guartz', version: '1.0'
+	
+	compile group: 'com.googlecode.', name: 'google-api-translate-java' , version: '0.+'
+
+	compile group: 'org.glassfish.grizzly', name: 'grizzly-framework', version: '2.1.1'
+	providedCompile group: 'javax.servlet', name: 'servlet-api', version: '2.5'
+	
+	compile group: 'org.activiti', name: 'activiti-engine', version: '5.7'
+	
+
+	
+	compile group: 'joda-time', name: 'joda-time', version: '2.0'
+	
+
+	//testing
+	testCompile group: 'junit', name: 'junit', version: '4.+'
+	testCompile group: 'org.mockito', name: 'mockito-core', version: '1.8.5'
+	testCompile group: 'org.easytesting', name: 'fest-assert', version: '1.4'
+	testCompile group: 'org.jukito', name: 'jukito', version: '1.1' 
+	
+	testCompile group: 'com.mycila.testing.plugins', name: 'mycila-testing-mockito', version: '2.8'
+	testCompile group: 'com.mycila.testing.plugins', name: 'mycila-testing-guice2', version: '2.8'
+	testCompile group: 'com.mycila.testing.plugins', name: 'mycila-testing-db', version: '2.8'
+	
+	testCompile group: 'org.glassfish', name: 'javax.servlet', version: '3.1'
+	testCompile group: 'com.sun.jersey.jersey-test-framework', name: 'jersey-test-framework-grizzly2', version: '1.8'
+	testCompile group: 'com.sun.jersey.jersey-test-framework', name: 'jersey-test-framework-core', version: '1.8'
+	testCompile group: 'com.sun.jersey', name: 'jersey-client', version: '1.8'
+	testCompile group: 'com.sun.jersey', name: 'jersey-server', version: '1.8'
+	testCompile group: 'com.sun.jersey', name: 'jersey-grizzly2', version: '1.8'
+
+	testCompile group: 'org.glassfish.grizzly', name: 'grizzly-http-server', version: '2.1.1'
+	testCompile group: 'org.glassfish.grizzly', name: 'grizzly-http-servlet', version: '2.1.1'
+	testCompile group: 'org.glassfish.grizzly', name: 'grizzly-framework', version: '2.1.1'
+	
+	
+	//Persistence
+	//see http://code.google.com/p/orient/wiki/JavaAPI#Database_types and http://code.google.com/p/orient/wiki/GraphDatabaseTinkerpop
+
+	compile 'com.orientechnologies:orientdb-core:'+orientVersion
+	compile 'com.orientechnologies:orient-commons:'+orientVersion
+
+	compile 'com.orientechnologies:orientdb-client:'+orientVersion //needed for remote server
+	compile 'com.orientechnologies:orientdb-enterprise:'+orientVersion //needed for remote server
+
+
+	compile 'com.tinkerpop.blueprints:blueprints-core:'+tinkerVersion   //Graph Persistence
+	compile 'com.tinkerpop.blueprints:blueprints-orient:'+tinkerVersion  //Graph Persistence
+
+	compile 'com.orientechnologies:orientdb-object:'+orientVersion//Object persistence
+	
+	
+}
+
+test { systemProperties 'property': 'value' }
+
+
