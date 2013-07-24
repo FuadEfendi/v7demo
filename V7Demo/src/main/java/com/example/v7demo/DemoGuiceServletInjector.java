@@ -4,6 +4,7 @@ import java.util.List;
 
 import uk.co.q3c.v7.base.config.V7Ini;
 import uk.co.q3c.v7.base.guice.BaseGuiceServletInjector;
+import uk.co.q3c.v7.base.ui.V7UIModule;
 
 import com.google.inject.Module;
 
